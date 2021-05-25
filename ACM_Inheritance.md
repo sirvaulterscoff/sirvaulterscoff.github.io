@@ -9,10 +9,7 @@
 </head>
 
 <body class="stackedit">
-  <div class="stackedit__html"><blockquote>
-<p>Written with <a href="https://stackedit.io/">StackEdit</a>.</p>
-</blockquote>
-</div>
+  <div class="stackedit__html"></div>
 </body>
 
 </html>
