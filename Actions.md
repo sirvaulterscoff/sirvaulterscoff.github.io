@@ -256,3 +256,66 @@ sequenceDiagram
 - v1/sign/sign - подписание документа
 - v1/sign/verify - проверка подписи документа
 - v1/edit/addAttach - добавление вложения  
+
+## Концепция действия по работе с отчетами
+Тут фиксирую видение как бы могло быть реализовано действие по формированию печатных форм. В условиях отсутствия детализации бизнес-составляющей задачи делаю следующие допущения:
+
+- точное поведение действия (и будет ли оно частным для каждого отчета в отдельности или общим для неск отчетов) должно быть предоставлено БА
+- далее предполагаю простой сценарий при котором пользователю выводится диалог с вводами каких-то параметров
+- заполненые данные передаются на сервер, где вызывается обработчик формирования отчета
+- в ответ приходит файл отчета
+
+Возможное описание действия (далее демнострация концепции а не спецификация формата описания):
+```xml
+<action id="v1/reports/incomeDocReport">
+  <client-validators>
+	  <!-- Включаем действие если не выбран никакой документ -->
+	  <validator id="not-selected"/>
+  </client-validators>
+  <client-params>
+	  <param name="form-template">
+	  <!-- указываем где взять json для этой формы. Фронт из этого параметра сделает URL вида /static/forms/common/report_two_fields.json -->
+	     <f:string>common/report_two_fields</f:string>
+	  </param>
+  </client-params>
+</action>
+ ```
+на клиенте реализован обработчик для группы действий v1/reports
+```js
+val allActions = { "v1/reports" : function() {....} }
+
+fun lookupAction(acionId) {
+	//разбить строку v1/reports/incomdeDocReport на части, и поискать наличие обработчика.
+	for (x in ["v1/reports/incomeDocReport", "v1/reports", "v1"] {
+	   if x in allActions return allActions[x]
+	}
+	return null;
+}
+```
+функция, которая зарегистрирован под ключом v1/reports:
+
+1. Скачивает дескриптор формы, переданный параметром form-template
+2. Отображает форму клиенту
+3. Получает введенные данные и формирует JSON объект
+4. Осуществляет вызов REST POST /api/actions/v1/reports$incomeDocReport и передает JSON  объект в виде тела запрос
+
+На стороне gateway реализован фильтр вида
+```kotlin
+//обрабатыем все вызовы на /api/actions, определяем вызываемый action, спрашиваем у СБ можно ли
+route().path("/api/actions/")
+	.filter((request, next) -> {
+		val actionId = request
+			.removeStart("/api/actions/")
+			.substringBefore("$")
+		checkUserActionPermision(actionId, userId)
+	}
+```
+и обработчик генерации отчетов вида
+```kotlin
+@PostMapping(path = "/api/actions/v1/reports/{reportId}", consumes = "application/json")
+fun generateReport(@PathVariable reportId: String, @Body payload: ReportParams) : ReponseEntity {
+	return applicationContext
+		.getBean<ReportGenerator>(reportId)
+		.generate(payload)
+}
+```
