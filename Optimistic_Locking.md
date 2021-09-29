@@ -181,5 +181,5 @@ commit;
 
 Таким образом, этот вариант подходит для случая высокой конкуренции за ресурсы БД (быстрее освобождаем коннекты, более короткие транзакции, нет эксклюзивной блокировки).
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMjM5NDU3MzgsLTEyOTczOTUzODZdfQ==
+eyJoaXN0b3J5IjpbMjM5NDU3MzhdfQ==
 -->
