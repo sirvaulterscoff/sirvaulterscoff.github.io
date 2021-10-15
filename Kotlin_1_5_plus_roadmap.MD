@@ -63,6 +63,9 @@ kotlin {
 Эта проверка должна еще больше расширить удобство sealed class/interface
 
 ## 2. Suspend functions as super-types
+
+Описание тут [KT-18707](https://youtrack.jetbrains.com/issue/KT-18707)
+
 До этой фичи код вида
 ```kotlin
 interface FlowAction : (FlowCollector<String>) -> Unit {  
@@ -124,7 +127,7 @@ fun  getDate(): Date {
   val dateSource =  createDateSource()  // Also warning: experimental API usage  // ...  
 }
 ```
-Доступно в 1.5.30. А тут  [полное](https://kotlinlang.org/docs/opt-in-requirements.html#experimental-status-of-the-opt-in-requirements) описание
+Доступно в 1.5.30. А тут  [полное](https://kotlinlang.org/docs/opt-in-requirements.html#experimental-status-of-the-opt-in-requirements) описание и [тикет](https://youtrack.jetbrains.com/issue/KT-22956)
 
 ## 4. Улучшения с рекурсивным генериками 
 
@@ -147,6 +150,9 @@ val containerB = PostgreSQLContainer(DockerImageName.parse("postgres:13-alpine")
 //Вобщем будем работать для такого описания класса
 public class PostgreSQLContainer<SELF extends PostgreSQLContainer<SELF>> extends JdbcDatabaseContainer<SELF> {
 ```
+
+Источник [KT-40804](https://youtrack.jetbrains.com/issue/KT-40804)
+
 
 ## 5. Смягчили ограничения на builder-interface
 Ну например, есть в stdlib вот такая удобная функция
@@ -171,6 +177,7 @@ fun builder() {
     }  
 }
 ```
+Взято [отсюда](https://kotlinlang.org/docs/whatsnew1530.html#eliminating-builder-inference-restrictions)
 
 ## 6. Создание Annotation class
 Аннотации в Java являются интерфейсами, что приводит к двум следствия:
@@ -192,6 +199,8 @@ fun main(args: Array<String>) {
 }
 ``` 
 
+[Описание от Романа Елизарова](https://youtrack.jetbrains.com/issue/KT-45395)
+
 ## 7. Аннотация над типами классов 
 ```kotlin
 @Target(AnnotationTarget.TYPE_PARAMETER)
@@ -210,6 +219,7 @@ fun test(@ForAll list: @Size(5) List<@AlphaChars String>) {
 }
 ```
 Ну и как вам мета-программирование, хотели бы жить в таком мире?
+Описано в [KT-43714](https://youtrack.jetbrains.com/issue/KT-43714)
 
 ## 8. Улучшеный на 23% вывод типов
 [Тут](https://youtrack.jetbrains.com/issue/KT-40804) много примеров, что станет лучше
@@ -244,7 +254,7 @@ runNonBlocking {
 ### Улучшили работу с Duration
 Красиво выводит
 |Код| Вывод |
-|--|--|
+|---|---|
 | Duration.days(45).toString() | `45d` |
 | Duration.days(1.5).toString() | `1d 12h` |
 |Duration.minutes(1230).toString()|`20h 30m`|
@@ -274,8 +284,12 @@ val mixedColor = colorsText.splitToSequence(regex)
 ```
 Естественно, вычисление каждого элемента lazy
 
+Ну и все эти изменения описали [тут](https://kotlinlang.org/docs/whatsnew1530.html#standard-library)
+
 ## Еще
 Когда-нибудь [запилят](https://youtrack.jetbrains.com/issue/KT-46778) поддержку sealed-классов Java
+
 Ждем [новый компилятор](https://youtrack.jetbrains.com/issue/KT-46756), который "существенно быстрее"
+
 Ну и новый Kotlin Intermediate Representation (IR) - пока посмотреть [не на что](https://kotlinlang.org/docs/whatsnew15.html#stable-jvm-ir-backend) (
 
